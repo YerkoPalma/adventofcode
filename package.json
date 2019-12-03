@@ -8,7 +8,7 @@
     "index.js"
   ],
   "scripts": {
-    "test": "standard --verbose | snazzy && tape test.js | tap-summary",
+    "test": "standard --verbose | snazzy && tape 2019/*/test.js | tap-summary",
     "start": "node index.js"
   },
   "repository": "YerkoPalma/adventofcode",
