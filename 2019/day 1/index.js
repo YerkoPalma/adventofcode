@@ -1,7 +1,9 @@
 const fs = require('fs')
 
 exports.calculateFuel = calculateFuel
-exports.calculateFromInput = calculateFromInput
+exports.calculateFuelRecursive = calculateFuelRecursive
+exports.calculateFromInput = calculateFromInputFactory(calculateFuel)
+exports.calculateFromInputRecursive = calculateFromInputFactory(calculateFuelRecursive)
 
 /**
  *
@@ -13,21 +15,34 @@ function calculateFuel (mass) {
     mass = parseInt(mass, 10)
     if (isNaN(mass)) return 0
   }
-  return Math.floor(mass / 3) - 2
+  const fuel = Math.floor(mass / 3) - 2
+  return fuel > 0 ? fuel : 0
 }
 
 /**
  *
- * @param {string} input The path of the input file
- * @param {*} cb A callback with the calculated fuel, console.log if not defined
+ * @param {number} mass Initial mass
  */
-function calculateFromInput (input, cb = console.log) {
-  fs.readFile(input, 'utf8', (err, data) => {
-    if (err) cb(err)
-    let totalFuel = 0
-    for (const moduleMass of data.split('\n')) {
-      totalFuel += calculateFuel(moduleMass)
-    }
-    cb(null, totalFuel)
-  })
+function calculateFuelRecursive (mass) {
+  if (mass <= 0) return 0
+  const currentFuel = calculateFuel(mass)
+  return currentFuel + calculateFuelRecursive(currentFuel)
+}
+
+/**
+ *
+ * @param {string} fn The function to run on each line of the file
+ * @returns {Function}
+ */
+function calculateFromInputFactory (fn) {
+  return (input, cb = console.log) => {
+    fs.readFile(input, 'utf8', (err, data) => {
+      if (err) cb(err)
+      let totalFuel = 0
+      for (const moduleMass of data.split('\n')) {
+        totalFuel += fn(moduleMass)
+      }
+      cb(null, totalFuel)
+    })
+  }
 }
