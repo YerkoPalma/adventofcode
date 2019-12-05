@@ -1,6 +1,6 @@
 const test = require('tape')
 const path = require('path')
-const { makeIntcode, makeIntcodeFromFile } = require('./')
+const { makeIntcode, makeIntcodeFromFile, findInputsForTarget } = require('./')
 
 test('makeIntcode', function (t) {
   t.plan(4)
@@ -17,5 +17,14 @@ test('makeIntcodeFromFile', function (t) {
   makeIntcodeFromFile(path.join(__dirname, 'input.test.txt'), (err, intcode) => {
     t.error(err)
     t.deepEqual(intcode, [3500, 9, 10, 70, 2, 3, 11, 0, 99, 30, 40, 50])
+  })
+})
+
+test('findInputsForTarget', function (t) {
+  t.plan(2)
+
+  findInputsForTarget(path.join(__dirname, 'input.txt'), 3166704, (err, nounAndVerb) => {
+    t.error(err)
+    t.deepEqual(nounAndVerb, [12, 2])
   })
 })
